@@ -1,26 +1,44 @@
+## Put comments here that give an overall description of what your
+## functions do
 
+## Write a short comment describing this function
+## This function creates a special matrix object 
 makeCacheMatrix <- function(x = matrix()) {
-  m<-NULL
-  set<-function(y){
-  x<<-y
-  m<<-NULL
-}
-get<-function() x
-setmatrix<-function(solve) m<<- solve
-getmatrix<-function() m
-list(set=set, get=get,
-   setmatrix=setmatrix,
-   getmatrix=getmatrix)
+        mInv <- NULL
+        mBase <- NULL
+        set <- function(y){
+                x <<- y
+        }
+        get <- function() x
+        setBmatrix <- function(bmatrix) mBase <<- bmatrix
+        getBmatrix <- function() mBase
+        setImatrix <- function(imatrix) mInv <<- imatrix
+        getImatrix <- function() mInv
+        list(set = set, get = get, 
+             setImatrix = setImatrix,
+             getImatrix = getImatrix,
+             setBmatrix = setBmatrix,
+             getBmatrix = getBmatrix)
 }
 
-cacheSolve <- function(x=matrix(), ...) {
-    m<-x$getmatrix()
-    if(!is.null(m)){
-      message("getting cached data")
-      return(m)
-    }
-    datos<-x$get()
-    m<-solve(datos, ...)
-    x$setmatrix(m)
-    m
+
+## Write a short comment describing this function
+## This function returns the inverse of the matrix created by makeCacheMatrix. If the 
+## inverse is already calculated then the inverse from cache is returned
+cacheSolve <- function(x, ...) {
+        ## Return a matrix that is the inverse of 'x'
+        m <- x$getImatrix()
+        nmatrix <- x$get()
+        if(!is.null(m)){
+                if (isTRUE(all.equal(x$getBmatrix(),nmatrix))){
+                        message("getting cached data")
+                        return(m)        
+                }
+        }
+        x$setBmatrix(nmatrix)
+        m <- solve(nmatrix)
+        x$setImatrix(m)
+        m
 }
+
+
